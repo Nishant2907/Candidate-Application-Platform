@@ -38,6 +38,7 @@ export default function SearchJobs() {
         []
     );
 
+    // Instersection Observer API
     const lastJobRef = useCallback(node => {
         if (isLoading) return;
         if (observer.current) observer.current.disconnect();
@@ -165,7 +166,7 @@ export default function SearchJobs() {
             <div className="w-full px-5 lg:px-10 py-10 ">
                 <div className="flex flex-wrap gap-10 items-center justify-center text-black">
                     {filterJobs().map((list, index) => (
-                        <div key={index}
+                        <div ref={index === filterJobs().length - 1 ? lastJobRef : null} key={list.jdUid}
                             className="bg-white shadow-xl border rounded-xl min-w-[20rem] min-h-[30rem] p-4 flex flex-col items-start gap-2">
 
                             <div>
