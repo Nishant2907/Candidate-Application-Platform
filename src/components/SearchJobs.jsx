@@ -2,6 +2,11 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import MultiSelectDropdown from './dropdown/MultiSelectDropdown';
 import SingleSelectDropdown from './dropdown/SingleSelectDropdown';
 
+import Tooltip from '@mui/material/Tooltip';
+import Popover from './popover/Popover';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+
 const LIMIT = 5;
 
 export default function SearchJobs() {
@@ -145,7 +150,7 @@ export default function SearchJobs() {
                 </div>
             </div>
 
-            <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            {/* <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                 {filterJobs().map((job, index) => (
                     <div ref={index === filterJobs().length - 1 ? lastJobRef : null} key={job.jdUid} className="border-solid border-2 p-2">
                         <p>{job.jdUid}</p>
@@ -154,12 +159,74 @@ export default function SearchJobs() {
                         <p>Location: {job.location}</p>
                     </div>
                 ))}
+            </div> */}
+
+
+            <div className="w-full px-5 lg:px-10 py-10 ">
+                <div className="flex flex-wrap gap-10 items-center justify-center text-black">
+                    {filterJobs().map((list, index) => (
+                        <div key={index}
+                            className="bg-white shadow-xl border rounded-xl min-w-[20rem] min-h-[30rem] p-4 flex flex-col items-start gap-2">
+
+                            <div>
+                                <p className="px-1 py-1 rounded-lg border text-[9px] font-normal bg-white ">
+                                    ⏳ Posted {getRandomNumber(3, 25)} days ago
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <div>
+                                    <img src={list.logoUrl} width={50} height={100} />
+                                </div>
+                                <div className="flex flex-col items-start">
+                                    <h3 className="text-[13px] font-semibold mb-1 text-[#8b8b8b] tracking-[1px]">
+                                        {list.companyName}
+                                    </h3>
+                                    <h2 className="text-sm leading-normal mb-1">
+                                        {capitalizeWords(list.jobRole)}
+                                    </h2>
+                                    <p className="text-[11px]">{capitalizeWords(list.location)}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-sm leading-normal text-[#4D596A]">
+                                    Estimated Salary: ₹{list.minJdSalary !== null ? list.minJdSalary : '0'}
+                                    - {list.maxJdSalary} LPA
+                                    <span className="pl-1">
+                                        <Tooltip title="Offered salary range" placement="top">
+                                            <span>✅</span>
+                                        </Tooltip>
+                                    </span>
+                                </p>
+                            </div>
+                            <div>
+                                <p className="font-semibold	text-base">About company:</p>
+                            </div>
+
+                            <div className="h-64" style={{ overflow: "hidden", maskImage: "linear-gradient(rgb(255, 255, 255), rgb(255, 255, 255), rgba(255, 255, 255, 0))" }}	>
+                                <p className="text-sm font-black">About Us</p>
+                                <p className="max-w-[300px] text-sm text-justify font-normal	">{list.jobDetailsFromCompany}</p>
+                            </div>
+
+                            <div className="w-full text-center">
+                                <Popover desc={list.jobDetailsFromCompany} />
+                            </div>
+
+                            <div className="flex flex-col items-start justify-center">
+                                <p className="text-[13px] font-black text-[#8B8B8B] ">Minimum Experience</p>
+                                <p className="text-sm font-normal	">{list.minExp !== null ? `${list.minExp} years` : '0 years'}</p>
+                            </div>
+
+                            <ColorButton className="px-6 py-2 text-base text-black font-bold w-full mt-5 rounded-md" variant="contained">⚡️ Easy Apply</ColorButton>
+                        </div>
+                    ))}
+                </div>
             </div>
+
             {isLoading && <p>Loading...</p>}
         </div>
     );
 }
-
 
 
 
@@ -236,3 +303,21 @@ const employeesList = [
 const basePayList = [
     '0L', '10L', '20L', '30L', '40L', '50L', '60L', '70L'
 ];
+
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function capitalizeWords(str) {
+    return str.replace(/\b\w/g, function (char) {
+        return char.toUpperCase();
+    });
+}
+
+const ColorButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.getContrastText('#55efc4'),
+    backgroundColor: '#55efc4',
+    '&:hover': {
+        backgroundColor: '#55efc4', // Adjust hover color if needed
+    },
+}));
