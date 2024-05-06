@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-export default function Searchfilter() {
+export default function Fetch() {
     const [jobDescriptions, setJobDescriptions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [offset, setOffset] = useState(0);
-    const limit = 5;
+    const limit = 15;
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -36,7 +36,6 @@ export default function Searchfilter() {
             const data = await response.json();
             console.log(data);
             setJobDescriptions(data.jdList);
-            setOffset(prevOffset => prevOffset + limit);
         } catch (error) {
             console.error("Fetch error:", error);
             setError(error.message);
@@ -53,7 +52,6 @@ export default function Searchfilter() {
 
     return (
         <div>
-
             <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                 {isLoading && <p>Loading...</p>}
                 {error && <p>Error: {error}</p>}

@@ -1,11 +1,10 @@
 import './App.css';
-// import Scroll from './components/Scroll';
-import InfiniteScroll from './components/InfiniteScroll'
+import Fetch from './components/Fetch'
 function App() {
   return (
     <div>
-        {/* <Scroll/> */}
-        <InfiniteScroll/>
+        <Fetch/>
+
     </div>
   );
 }
