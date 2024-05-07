@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/material/styles';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,16 +45,24 @@ export default function SingleSelectDropdown({ onSelectionChange, list, label })
         onSelectionChange(selectedName);
     };
 
+    console.log(label, label.length);
+    const NewFormControl = styled(FormControl)(({ theme }) => ({
+        margin: theme.spacing(1),
+            minWidth: label.length*10+25,
+            maxWidth: 210,
+    }));
+
     return (
         <div>
-            <FormControl sx={{ m: 1, width: 300 }}>
+            <NewFormControl sx={{ m: 0.5 }} size="small">
                 <InputLabel id="single-select-dropdown-label">{label}</InputLabel>
                 <Select
                     labelId="single-select-dropdown-label"
                     id="single-select-dropdown"
                     value={singleSelectedItem}
                     onChange={handleChange}
-                    input={<OutlinedInput id="select-single-chip" label="Chip" />}
+                    label={label}
+                    input={<OutlinedInput id="select-single-chip" label={label} />}
                     renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             <Chip
@@ -81,7 +90,8 @@ export default function SingleSelectDropdown({ onSelectionChange, list, label })
                         </MenuItem>
                     ))}
                 </Select>
-            </FormControl>
+            </NewFormControl>
         </div>
     );
 }
+

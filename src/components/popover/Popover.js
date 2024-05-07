@@ -14,7 +14,7 @@ export default function JobPopover(desc) {
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-    console.log(desc.desc);
+    // console.log(desc.desc);
     return (
         <div>
             <p className="text-base text-[#5751DD] cursor-pointer" aria-describedby={id} variant="contained" onClick={handleClick}>
@@ -43,10 +43,7 @@ export default function JobPopover(desc) {
                 <div>
                     <h1 className="text-center text-xl font-black mt-3">Job Description:</h1>
                 </div>
-                {/* <Typography sx={{ p: 2, width: "45rem" }}> */}
                     <p className="w-[45rem] px-5 py-3 mb-3 text-justify">{desc.desc}</p>
-                {/* </Typography> */}
-
             </Popover>
         </div>
     );

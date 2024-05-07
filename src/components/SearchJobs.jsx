@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import MultiSelectDropdown from './dropdown/MultiSelectDropdown';
 import SingleSelectDropdown from './dropdown/SingleSelectDropdown';
-
+import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Popover from './popover/Popover';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import '../App.css';
 
 const LIMIT = 5;
 
@@ -69,7 +70,7 @@ export default function SearchJobs() {
         } else if (type === 'basePay') {
             // Remove 'L' from the selectedItems before setting the filter
             const cleanedSelectedItems = selectedItems.replace('L', '');
-            console.log(cleanedSelectedItems);
+            // console.log(cleanedSelectedItems);
             setFilters(prevFilters => ({
                 ...prevFilters,
                 minBasePay: cleanedSelectedItems
@@ -122,49 +123,39 @@ export default function SearchJobs() {
 
 
     return (
-        <div>
+        <div className="mt-10 mb-20">
+            <div className="w-full px-20 lg:px-48 gap-2">
+                <div className="flex flex-wrap">
+                    <MultiSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'role')} list={roleList} label="Roles" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <div>
-                    <MultiSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'role')} list={roleList} label="Role" />
-                </div>
+                    <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'employees')} list={employeesList} label="Number of Employees" />
 
-                <div>
-                    <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'employees')} list={employeesList} label="Employees" />
-                </div>
-
-                <div>
                     <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'experience')} list={experienceList} label="Experience" />
-                </div>
 
-                <div>
-                    <MultiSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'location')} list={locationList} label="Location" />
-                </div>
+                    <MultiSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'location')} list={locationList} label="Remote" />
 
-                <div>
-                    <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'basePay')} list={basePayList} label="MinBasePay" />
-                </div>
+                    <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'basePay')} list={basePayList} label="Minimum Base Pay Salary" />
 
-                <div>
-                    <label htmlFor="companyName">Company Name:</label>
-                    <input className="border-solid border-2 border-gray-400 p-1" type="text" id="companyName" name="companyName" value={filters.companyName} onChange={handleFilterChange} />
+                    <div className="m-1">
+                        <TextField label="Company Name" variant="outlined" size="small"
+                            type="text"
+                            id="companyName" name="companyName"
+                            value={filters.companyName} onChange={handleFilterChange} />
+                    </div>
+
                 </div>
             </div>
 
-            {/* <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                {filterJobs().map((job, index) => (
-                    <div ref={index === filterJobs().length - 1 ? lastJobRef : null} key={job.jdUid} className="border-solid border-2 p-2">
-                        <p>{job.jdUid}</p>
-                        <h2>Company Name: {job.companyName}</h2>
-                        <p>Role: {job.jobRole}</p>
-                        <p>Location: {job.location}</p>
-                    </div>
-                ))}
-            </div> */}
-
-
             <div className="w-full px-5 lg:px-10 py-10 ">
                 <div className="flex flex-wrap gap-10 items-center justify-center text-black">
+
+                    {!isLoading && filterJobs().length === 0 &&
+                        <div className="">
+                            <img className="mx-10" src="/assets/images/nothing-found.png" alt="Not Found" width={300} height={300}  />
+                            <p>No Jobs available for this category at the moment</p>
+                        </div>
+                    }
+
                     {filterJobs().map((list, index) => (
                         <div ref={index === filterJobs().length - 1 ? lastJobRef : null} key={list.jdUid}
                             className="bg-white shadow-xl border rounded-xl min-w-[20rem] min-h-[30rem] p-4 flex flex-col items-start gap-2">
@@ -224,7 +215,10 @@ export default function SearchJobs() {
                 </div>
             </div>
 
-            {isLoading && <p>Loading...</p>}
+            {isLoading &&
+                // <div className="" id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
+                <p>Loading...</p>
+            }
         </div>
     );
 }
@@ -319,6 +313,6 @@ const ColorButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText('#55efc4'),
     backgroundColor: '#55efc4',
     '&:hover': {
-        backgroundColor: '#55efc4', // Adjust hover color if needed
+        backgroundColor: '#55efc4', // hover color
     },
 }));
