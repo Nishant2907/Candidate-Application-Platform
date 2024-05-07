@@ -8,9 +8,11 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import '../App.css';
 
+// Limit for fetching job descriptions
 const LIMIT = 5;
 
 export default function SearchJobs() {
+    // State variables
     const [jobDescriptions, setJobDescriptions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -24,6 +26,7 @@ export default function SearchJobs() {
         minBasePay: ''
     });
 
+    // Fetch job descriptions and update state
     const fetchAndSetJobDescriptions = useCallback(
         async () => {
             setIsLoading(true);
@@ -39,7 +42,7 @@ export default function SearchJobs() {
         []
     );
 
-    // Instersection Observer API
+    // Intersection Observer API to fetch more job descriptions
     const lastJobRef = useCallback(node => {
         if (isLoading) return;
         if (observer.current) observer.current.disconnect();
@@ -51,6 +54,7 @@ export default function SearchJobs() {
         if (node) observer.current.observe(node);
     }, [isLoading, fetchAndSetJobDescriptions]);
 
+    // Handle selection change in dropdowns
     const handleSelectionChange = (selectedItems, type) => {
         if (type === 'role') {
             setFilters(prevFilters => ({
@@ -78,18 +82,18 @@ export default function SearchJobs() {
         }
     };
 
+    // Fetch job descriptions on component mount
     useEffect(() => {
         fetchAndSetJobDescriptions();
     }, []);
 
+    // Return error message if there's an error
     if (error) {
         return <p>Error: {error}</p>;
     }
 
-    if (jobDescriptions.length === 0) {
-        return <p>No job descriptions found.</p>;
-    }
 
+    // Function to filter job descriptions based on filters
     const filterJobs = () => {
         let filteredJobs = jobDescriptions.filter(job => {
             return (
@@ -113,6 +117,7 @@ export default function SearchJobs() {
         return filteredJobs;
     };
 
+    // Handle filter change
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters(prevFilters => ({
@@ -121,21 +126,18 @@ export default function SearchJobs() {
         }));
     };
 
-
     return (
         <div className="mt-10 mb-20">
             <div className="w-full px-20 lg:px-48 gap-2">
                 <div className="flex flex-wrap">
+                    {/* Dropdowns for filtering */}
                     <MultiSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'role')} list={roleList} label="Roles" />
-
                     <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'employees')} list={employeesList} label="Number of Employees" />
-
                     <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'experience')} list={experienceList} label="Experience" />
-
                     <MultiSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'location')} list={locationList} label="Remote" />
-
                     <SingleSelectDropdown onSelectionChange={(selectedItems) => handleSelectionChange(selectedItems, 'basePay')} list={basePayList} label="Minimum Base Pay Salary" />
 
+                    {/* Text field for company name filter */}
                     <div className="m-1">
                         <TextField label="Company Name" variant="outlined" size="small"
                             type="text"
@@ -146,16 +148,19 @@ export default function SearchJobs() {
                 </div>
             </div>
 
+            {/* Display filtered jobs */}
             <div className="w-full px-5 lg:px-10 py-10 ">
                 <div className="flex flex-wrap gap-10 items-center justify-center text-black">
 
+                    {/* Return message if no job descriptions found */}
                     {!isLoading && filterJobs().length === 0 &&
                         <div className="">
-                            <img className="mx-10" src="/assets/images/nothing-found.png" alt="Not Found" width={300} height={300}  />
+                            <img className="mx-10" src="/assets/images/nothing-found.png" alt="Not Found" width={300} height={300} />
                             <p>No Jobs available for this category at the moment</p>
                         </div>
                     }
 
+                    {/* Display job cards */}
                     {filterJobs().map((list, index) => (
                         <div ref={index === filterJobs().length - 1 ? lastJobRef : null} key={list.jdUid}
                             className="bg-white shadow-xl border rounded-xl min-w-[20rem] min-h-[30rem] p-4 flex flex-col items-start gap-2">
@@ -225,28 +230,24 @@ export default function SearchJobs() {
 
 
 
+// Fetch data from API
 const fetchData = async (offset) => {
     try {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
-
         const body = JSON.stringify({
             limit: LIMIT,
             offset: offset,
         });
-
         const requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body,
         };
-
         const response = await fetch("https://api.weekday.technology/adhoc/getSampleJdJSON", requestOptions);
-
         if (!response.ok) {
             return null;
         }
-
         return await response.json();
     } catch (error) {
         console.error("Fetch error:", error);
@@ -254,6 +255,7 @@ const fetchData = async (offset) => {
     }
 };
 
+// Remove duplicate job descriptions
 const removeDuplicates = (array, key) => {
     const uniqueKeys = new Set();
     return array.filter(obj => {
@@ -267,52 +269,30 @@ const removeDuplicates = (array, key) => {
 };
 
 
-const roleList = [
-    'FrontEnd',
-    'BackEnd',
-    'IOS',
-    'Android'
-];
+// Dropdown list data
+const roleList = ['FrontEnd', 'BackEnd', 'IOS', 'Android'];
+const locationList = ['Remote', 'Mumbai', 'Bangalore', 'Delhi NCR'];
+const experienceList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+const employeesList = ['1-10', '11-20', '21-50', '51-100', '101-200', '201-500', '500+'];
+const basePayList = ['0L', '10L', '20L', '30L', '40L', '50L', '60L', '70L'];
 
-const locationList = [
-    'Remote',
-    'Mumbai',
-    'Bangalore',
-    'Delhi NCR'
-];
-
-const experienceList = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
-];
-
-const employeesList = [
-    '1-10',
-    '11-20',
-    '21-50',
-    '51-100',
-    '101-200',
-    '201-500',
-    '500+'
-];
-
-const basePayList = [
-    '0L', '10L', '20L', '30L', '40L', '50L', '60L', '70L'
-];
-
+// Function to get random number
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Function to capitalize words
 function capitalizeWords(str) {
     return str.replace(/\b\w/g, function (char) {
         return char.toUpperCase();
     });
 }
 
+// Styled button component
 const ColorButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText('#55efc4'),
     backgroundColor: '#55efc4',
     '&:hover': {
-        backgroundColor: '#55efc4', // hover color
+        backgroundColor: '#55efc4',
     },
 }));
