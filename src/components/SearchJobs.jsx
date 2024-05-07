@@ -144,7 +144,6 @@ export default function SearchJobs() {
                             id="companyName" name="companyName"
                             value={filters.companyName} onChange={handleFilterChange} />
                     </div>
-
                 </div>
             </div>
 
@@ -228,8 +227,6 @@ export default function SearchJobs() {
     );
 }
 
-
-
 // Fetch data from API
 const fetchData = async (offset) => {
     try {
@@ -267,7 +264,6 @@ const removeDuplicates = (array, key) => {
         return false;
     });
 };
-
 
 // Dropdown list data
 const roleList = ['FrontEnd', 'BackEnd', 'IOS', 'Android'];
